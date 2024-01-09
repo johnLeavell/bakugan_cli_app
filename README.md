@@ -32,4 +32,8 @@ ruby app.rb
 
 ## Dpendencies
 - [TTY::Prompt](https://ttytoolkit.org/) - Used for interactive command-line prompts.
+- [artii](https://github.com/miketierney/artii) - A small gem to generate ASCII art from text fed in to it
+
+
+
 - Ruby version: `3.2.2`
