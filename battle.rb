@@ -12,7 +12,12 @@ class Battle
     select_bakugans(@player1)
     select_bakugans(@player2)
     display_selected_bakugans
+    
+    until overall_winner?
     begin_battle
+    end
+
+    declare_overall_winner
   end
 
   private
@@ -24,10 +29,10 @@ class Battle
   def select_bakugans(player)
     puts "#{player.name}, use the spacebar to select 3 Bakugans:"
     choices = ['Dragonoid', 'Trox', 'Hammerhead', 'Ventri', 'Bruiser', 'Murph and Lil Jasper']
-    selected_bakugans = TTY::Prompt.new.multi_select("Choose Bakugans:", choices, min: 3, max: 3)
+    selected_bakugans = @prompt.multi_select("Choose Bakugans:", choices, min: 3, max: 3)
     
     selected_bakugans.each do |bakugan_name|
-      bakugan = Bakugan.new(bakugan_name)
+      bakugan = Bakugan.new(bakugan_name, player)
       player.selected_bakugans << bakugan
     end
   end
@@ -54,11 +59,11 @@ class Battle
     battle_result = simulate_battle(player1_bakugan, player2_bakugan)
 
     if battle_result
-      puts "#{@player1.name} wins the match!"
+      puts "#{@player1.name}'s #{player1_bakugan.name} wins the match!"
       player1_bakugan.brawls_won += 1
       @player1.wins += 1
     else
-      puts "#{@player2.name} wins the match!"
+      puts "#{@player2.name}'s #{player2_bakugan.name}  wins the match!"
       player2_bakugan.brawls_won += 1
       @player2.wins += 1
     end
@@ -91,4 +96,17 @@ class Battle
       puts "- #{bakugan.name} - Brawls Won: #{bakugan.brawls_won}"
     end
   end
+
+  def overall_winner?
+    @player1.selected_bakugans.all? { |bakugan| bakugan.brawls_won >= 3 } || @player2.selected_bakugans.all? { |bakugan| bakugan.brawls_won >= 3 }
+  end
+
+  def declare_overall_winner
+    if @player1.selected_bakugans.all? { |bakugan| bakugan.brawls_won >= 3 }
+      puts "\nOverall Winner: #{@player1.name}"
+    else
+      puts "\nOverall Winner: #{@player2.name}"
+    end
+  end
+
 end
